@@ -16,6 +16,24 @@
 * Type in your camera's username/password. The response will be similar to:
 *		var infraredstat= ...
 *
+* Installation:
+* 1) Go to "My Device Types" in your ST developer account (https://graph.api.smartthings.com/ide/devices)
+* 2) Click "New Device Type"
+* 3) Click "From Code"
+* 4) Paste this entire file into the space provided and click "Create"
+* 5) CLick "Publish" then "For Me"
+* 6) Click "My Devices"
+* 7) Click "New Device"
+* 8) Fill in Name, Device Network Id
+* 9) For "Type", choose "HI3510 Camera Device" (near bottom)
+* 10) For "Version", "choose "Published"
+* 11) Click "Create"
+* 12) Go into the ST app
+* 13) Touch the "Marketplace" tab (furthest right)
+* 14) Touch "Not Yet Configured" and choose your new device
+* 15) Fill in the required information and touch "Next"
+* 16) Optionally set up a SmartApp and touch "Done"
+*
 * Copyright 2015 uncleskippy
 *
 * This implementation is based on the Foscam Universal Device by skp19:
