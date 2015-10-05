@@ -36,11 +36,11 @@ metadata {
 		}
 	}
     
-    preferences {
-	    section("Configuration") {
-            input "numMinutes", "number", title: "Motion retrigger delay", defaultValue:2, required: false
-        }
-   	}
+	preferences {
+		section("Configuration") {
+			input "numMinutes", "number", title: "Motion retrigger delay", defaultValue:2, required: false
+		}
+	}
 
 	tiles(scale: 2) {
 		multiAttributeTile(name:"motion", type: "generic", width: 6, height: 4){
