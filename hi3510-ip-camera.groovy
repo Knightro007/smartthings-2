@@ -245,7 +245,6 @@ def moveDown() {
 
 def poll() {
 	log.trace("poll");
-	preset = "1";
 	hubGet("/cgi-bin/hi3510/param.cgi?cmd=getinfrared&", false);
 }
 
