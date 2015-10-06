@@ -60,7 +60,7 @@ metadata {
 			command "moveLeft"
 			command "moveRight"
 			command "moveUp"
-			command "moveDown"
+			command "moveDown"            
 
 			command "moveToPreset1"
 			command "moveToPreset2"
@@ -135,7 +135,7 @@ metadata {
 		valueTile("blank11", "device.image", width: 1, height: 1, decoration: "flat") {
 			state "blank", label: " ", backgroundColor: "#FFFFFF"
 		}
-
+        
 		valueTile("ledLabel", "device.image", width: 3, height: 1, decoration: "flat") {
 			state "blank", label: "Infrared LED Mode:", backgroundColor: "#FFFFFF"
 		}
@@ -143,19 +143,19 @@ metadata {
 		valueTile("presetLabel", "device.image", width: 2, height: 1, decoration: "flat") {
 			state "blank", label: "Preset Position:", backgroundColor: "#FFFFFF"
 		}
-
+        
 		valueTile("preset1", "device.image", width: 1, height: 1, decoration: "flat") {
 			state "blank", label: "1", action: "moveToPreset1", backgroundColor: "#BE81F7"
 		}
-
+        
 		valueTile("preset2", "device.image", width: 1, height: 1, decoration: "flat") {
 			state "blank", label: "2", action: "moveToPreset2", backgroundColor: "#3ADF00"
 		}
-
+        
 		valueTile("preset3", "device.image", width: 1, height: 1, decoration: "flat") {
 			state "blank", label: "3", action: "moveToPreset3", backgroundColor: "#F79F81"
 		}
-
+        
 		valueTile("preset4", "device.image", width: 1, height: 1, decoration: "flat") {
 			state "blank", label: "4", action: "moveToPreset4", backgroundColor: "#53a7c0"
 		}
@@ -192,22 +192,22 @@ def ledAuto() {
 
 def moveToPreset1() {
 	log.debug("preset1")
-   	hubGet("/cgi-bin/hi3510/preset.cgi?-act=goto&-number=1&", false);
+   	hubGet("/cgi-bin/hi3510/preset.cgi?-act=goto&-number=0&", false);
 }
 
 def moveToPreset2() {
 	log.debug("preset2")
-    hubGet("/cgi-bin/hi3510/preset.cgi?-act=goto&-number=2&", false);
+    hubGet("/cgi-bin/hi3510/preset.cgi?-act=goto&-number=1&", false);
 }
 
 def moveToPreset3() {
 	log.debug("preset3")
-    hubGet("/cgi-bin/hi3510/preset.cgi?-act=goto&-number=3&", false);
+    hubGet("/cgi-bin/hi3510/preset.cgi?-act=goto&-number=2&", false);
 }
 
 def moveToPreset4() {
 	log.debug("preset4")
-    hubGet("/cgi-bin/hi3510/preset.cgi?-act=goto&-number=4&", false);
+    hubGet("/cgi-bin/hi3510/preset.cgi?-act=goto&-number=3&", false);
 }
 
 //PTZ CONTROLS
