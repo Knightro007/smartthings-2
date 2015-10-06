@@ -51,21 +51,27 @@
 */
 
 metadata {
-	definition (name: "HI3510 Camera Device", namespace: "uncleskippy", author: "uncleskippy") {
+	definition (name: "HI3510 IP Camera Device", namespace: "uncleskippy", author: "uncleskippy") {
 			capability "Polling"
 			capability "Image Capture"
 
-			attribute "ledStatus",   "string"
+			attribute "ledStatus", "string"
+
+			command "moveLeft"
+			command "moveRight"
+			command "moveUp"
+			command "moveDown"
+
+			command "moveToPreset1"
+			command "moveToPreset2"
+			command "moveToPreset3"
+			command "moveToPreset4"
 
 			command "ledOn"
 			command "ledOff"
 			command "ledAuto"
 
-			command "left"
-			command "right"
-			command "up"
-			command "down"
-	}
+}
 
 	preferences {
 		input("ip", "string", title:"Camera IP Address", description: "Camera IP Address", required: true, displayDuringSetup: true)
@@ -76,17 +82,32 @@ metadata {
 		input("flip", "bool", title:"Flip?", description: "Camera Flipped?")
 	}
 
-	tiles {
+	tiles(scale: 2) {
 		standardTile("camera", "device.image", width: 1, height: 1, canChangeIcon: false, inactiveLabel: true, canChangeBackground: false) {
 			state "default", label: "", action: "", icon: "st.camera.dropcam-centered", backgroundColor: "#FFFFFF"
 		}
 
-		carouselTile("cameraDetails", "device.image", width: 3, height: 2) { }
+		carouselTile("cameraDetails", "device.image", width: 6, height: 4) { }
 
-		standardTile("take", "device.image", width: 1, height: 1, canChangeIcon: false, inactiveLabel: true, canChangeBackground: false) {
+		standardTile("take", "device.image", width: 2, height: 2, canChangeIcon: false, inactiveLabel: true, canChangeBackground: false) {
 			state "take", label: "Take", action: "Image Capture.take", icon: "st.camera.camera", backgroundColor: "#FFFFFF", nextState:"taking"
 			state "taking", label:'Taking', action: "", icon: "st.camera.take-photo", backgroundColor: "#53a7c0"
 			state "image", label: "Take", action: "Image Capture.take", icon: "st.camera.camera", backgroundColor: "#FFFFFF", nextState:"taking"
+		}
+
+		valueTile("left", "device.image", width: 1, height: 2, decoration: "flat") {
+			state "blank", label: "<", action: "moveLeft", icon: ""
+		}
+		valueTile("right", "device.image", width: 1, height: 2, decoration: "flat") {
+			state "blank", label: ">", action: "moveRight", icon: ""
+		}
+
+		standardTile("up", "device.button", width: 1, height: 1, canChangeIcon: false, canChangeBackground: false, decoration: "flat") {
+			state "up", label: "", action: "moveUp", icon: "st.thermostat.thermostat-up"
+		}
+
+		standardTile("down", "device.button", width: 1, height: 1, canChangeIcon: false, canChangeBackground: false, decoration: "flat") {
+			state "down", label: "", action: "moveDown", icon: "st.thermostat.thermostat-down"
 		}
 
 		standardTile("ledAuto", "device.ledStatus", width: 1, height: 1, canChangeIcon: false, inactiveLabel: true, canChangeBackground: false) {
@@ -107,32 +128,42 @@ metadata {
 			state "on", label: "off", action: "ledOff", icon: "st.Lighting.light13", backgroundColor: "#FFFFFF"
 		}
 
-		standardTile("left", "device.image", width: 1, height: 1, canChangeIcon: false,  canChangeBackground: false, decoration: "flat") {
-			state "left", label: "left", action: "left", icon: ""
+		standardTile("blank12", "device.image", width: 1, height: 2, decoration: "flat") {
+			state "blank", label: " ", backgroundColor: "#FFFFFF"
 		}
 
-		standardTile("right", "device.image", width: 1, height: 1, canChangeIcon: false,  canChangeBackground: false, decoration: "flat") {
-			state "right", label: "right", action: "right", icon: ""
+		valueTile("blank11", "device.image", width: 1, height: 1, decoration: "flat") {
+			state "blank", label: " ", backgroundColor: "#FFFFFF"
 		}
 
-		standardTile("up", "device.image", width: 1, height: 1, canChangeIcon: false, canChangeBackground: false, decoration: "flat") {
-			state "up", label: "up", action: "up", icon: "st.thermostat.thermostat-up"
+		valueTile("ledLabel", "device.image", width: 3, height: 1, decoration: "flat") {
+			state "blank", label: "Infrared LED Mode:", backgroundColor: "#FFFFFF"
 		}
 
-		standardTile("down", "device.image", width: 1, height: 1, canChangeIcon: false, canChangeBackground: false, decoration: "flat") {
-			state "down", label: "down", action: "down", icon: "st.thermostat.thermostat-down"
+		valueTile("presetLabel", "device.image", width: 2, height: 1, decoration: "flat") {
+			state "blank", label: "Preset Position:", backgroundColor: "#FFFFFF"
 		}
 
-		standardTile("refresh", "device.alarmStatus", inactiveLabel: false, decoration: "flat") {
-			state "refresh", action:"polling.poll", icon:"st.secondary.refresh"
+		valueTile("preset1", "device.image", width: 1, height: 1, decoration: "flat") {
+			state "blank", label: "1", action: "moveToPreset1", backgroundColor: "#BE81F7"
 		}
 
-		standardTile("blank", "device.image", width: 1, height: 1, canChangeIcon: false,  canChangeBackground: false, decoration: "flat") {
-			state "blank", label: "", action: "", icon: "", backgroundColor: "#FFFFFF"
+		valueTile("preset2", "device.image", width: 1, height: 1, decoration: "flat") {
+			state "blank", label: "2", action: "moveToPreset2", backgroundColor: "#3ADF00"
+		}
+
+		valueTile("preset3", "device.image", width: 1, height: 1, decoration: "flat") {
+			state "blank", label: "3", action: "moveToPreset3", backgroundColor: "#F79F81"
+		}
+
+		valueTile("preset4", "device.image", width: 1, height: 1, decoration: "flat") {
+			state "blank", label: "4", action: "moveToPreset4", backgroundColor: "#53a7c0"
 		}
 
 		main "camera"
-		details(["cameraDetails", "take", "up", "blank", "left", "down", "right", "ledAuto", "ledOn", "ledOff"])
+		details(["cameraDetails", "take", "blank12", "left", "up", "right", "down",
+        		"ledLabel", "ledAuto", "ledOn", "ledOff",
+                "presetLabel", "preset1", "preset2", "preset3", "preset4"])
 	}
 }
 
@@ -159,8 +190,28 @@ def ledAuto() {
 	hubGet("/cgi-bin/hi3510/param.cgi?cmd=setinfrared&-infraredstat=auto&", false)
 }
 
+def moveToPreset1() {
+	log.debug("preset1")
+   	hubGet("/cgi-bin/hi3510/preset.cgi?-act=goto&-number=1&", false);
+}
+
+def moveToPreset2() {
+	log.debug("preset2")
+    hubGet("/cgi-bin/hi3510/preset.cgi?-act=goto&-number=2&", false);
+}
+
+def moveToPreset3() {
+	log.debug("preset3")
+    hubGet("/cgi-bin/hi3510/preset.cgi?-act=goto&-number=3&", false);
+}
+
+def moveToPreset4() {
+	log.debug("preset4")
+    hubGet("/cgi-bin/hi3510/preset.cgi?-act=goto&-number=4&", false);
+}
+
 //PTZ CONTROLS
-def left() {
+def moveLeft() {
 	if(mirror == "true") {
 		hubGet("/cgi-bin/hi3510/ptzctrl.cgi?-step=1&-act=right&", false);
 	} else {
@@ -168,7 +219,7 @@ def left() {
 	}
 }
 
-def right() {
+def moveRight() {
 	if(mirror == "true") {
 		hubGet("/cgi-bin/hi3510/ptzctrl.cgi?-step=1&-act=left&", false);
 	} else {
@@ -176,7 +227,7 @@ def right() {
 	}
 }
 
-def up() {
+def moveUp() {
 	if(flip == "true") {
 		hubGet("/cgi-bin/hi3510/ptzctrl.cgi?-step=1&-act=down&", false);
 	} else {
@@ -184,7 +235,7 @@ def up() {
 	}
 }
 
-def down() {
+def moveDown() {
 	if(flip == "true") {
 		hubGet("/cgi-bin/hi3510/ptzctrl.cgi?-step=1&-act=up&", false);
 	} else {
@@ -192,7 +243,9 @@ def down() {
 	}
 }
 
-def poll() {    
+def poll() {
+	log.trace("poll");
+	preset = "1";
 	hubGet("/cgi-bin/hi3510/param.cgi?cmd=getinfrared&", false);
 }
 
@@ -223,7 +276,7 @@ private hubGet(def apiCommand, def useS3) {
 def parse(String description) {
 	//log.debug "Parsing '${description}'"
 	def map = stringToMap(description)
-	log.debug map
+	//log.debug map
 	def result = []
 
 	if (map.bucket && map.key) {
