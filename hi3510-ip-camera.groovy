@@ -69,9 +69,8 @@ metadata {
 
 			command "ledOn"
 			command "ledOff"
-			command "ledAuto"
-
-}
+			command "ledAuto"            
+	}
 
 	preferences {
 		input("ip", "string", title:"Camera IP Address", description: "Camera IP Address", required: true, displayDuringSetup: true)
@@ -102,11 +101,11 @@ metadata {
 			state "blank", label: ">", action: "moveRight", icon: ""
 		}
 
-		standardTile("up", "device.button", width: 1, height: 1, canChangeIcon: false, canChangeBackground: false, decoration: "flat") {
+		standardTile("up", "device.button", width: 2, height: 1, canChangeIcon: false, canChangeBackground: false, decoration: "flat") {
 			state "up", label: "", action: "moveUp", icon: "st.thermostat.thermostat-up"
 		}
 
-		standardTile("down", "device.button", width: 1, height: 1, canChangeIcon: false, canChangeBackground: false, decoration: "flat") {
+		standardTile("down", "device.button", width: 2, height: 1, canChangeIcon: false, canChangeBackground: false, decoration: "flat") {
 			state "down", label: "", action: "moveDown", icon: "st.thermostat.thermostat-down"
 		}
 
@@ -128,42 +127,35 @@ metadata {
 			state "on", label: "off", action: "ledOff", icon: "st.Lighting.light13", backgroundColor: "#FFFFFF"
 		}
 
-		standardTile("blank12", "device.image", width: 1, height: 2, decoration: "flat") {
-			state "blank", label: " ", backgroundColor: "#FFFFFF"
-		}
-
-		valueTile("blank11", "device.image", width: 1, height: 1, decoration: "flat") {
+		standardTile("blank11", "device.image", width: 1, height: 1) {
 			state "blank", label: " ", backgroundColor: "#FFFFFF"
 		}
         
-		valueTile("ledLabel", "device.image", width: 3, height: 1, decoration: "flat") {
-			state "blank", label: "Infrared LED Mode:", backgroundColor: "#FFFFFF"
-		}
-
-		valueTile("presetLabel", "device.image", width: 2, height: 1, decoration: "flat") {
-			state "blank", label: "Preset Position:", backgroundColor: "#FFFFFF"
+		valueTile("ledLabel", "device.image", width: 1, height: 1, decoration: "flat") {
+			state "blank", label: "LED\nMode", backgroundColor: "#FFFFFF"
 		}
         
 		valueTile("preset1", "device.image", width: 1, height: 1, decoration: "flat") {
-			state "blank", label: "1", action: "moveToPreset1", backgroundColor: "#BE81F7"
+			state "blank", label: "move\n1", action: "moveToPreset1", backgroundColor: "#53a7c0"
 		}
         
 		valueTile("preset2", "device.image", width: 1, height: 1, decoration: "flat") {
-			state "blank", label: "2", action: "moveToPreset2", backgroundColor: "#3ADF00"
+			state "blank", label: "move\n2", action: "moveToPreset2", backgroundColor: "#53a7c0"
 		}
         
 		valueTile("preset3", "device.image", width: 1, height: 1, decoration: "flat") {
-			state "blank", label: "3", action: "moveToPreset3", backgroundColor: "#F79F81"
+			state "blank", label: "move\n3", action: "moveToPreset3", backgroundColor: "#53a7c0"
 		}
         
 		valueTile("preset4", "device.image", width: 1, height: 1, decoration: "flat") {
-			state "blank", label: "4", action: "moveToPreset4", backgroundColor: "#53a7c0"
+			state "blank", label: "move\n4", action: "moveToPreset4", backgroundColor: "#53a7c0"
 		}
 
 		main "camera"
-		details(["cameraDetails", "take", "blank12", "left", "up", "right", "down",
-        		"ledLabel", "ledAuto", "ledOn", "ledOff",
-                "presetLabel", "preset1", "preset2", "preset3", "preset4"])
+		details(["cameraDetails", "ledLabel", "blank11", "preset1", "up", "preset2",
+				"ledAuto", "blank11", "left", "take", "right",
+				"ledOn", "blank11",
+				"ledOff", "blank11", "preset3", "down", "preset4"])
 	}
 }
 
