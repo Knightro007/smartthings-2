@@ -169,83 +169,83 @@ metadata {
 
 //TAKE PICTURE
 def take() {
-	hubGet("/tmpfs/auto.jpg?", true)
+	hubGet("/tmpfs/auto.jpg", true)
 }
 
 def ledOn() {
 	log.debug("LED changed to: on")
 	sendEvent(name: "ledStatus", value: "on");
-	hubGet("/cgi-bin/hi3510/param.cgi?cmd=setinfrared&-infraredstat=open&", false)
+	hubGet("/cgi-bin/hi3510/param.cgi?cmd=setinfrared&-infraredstat=open", false)
 }
 
 def ledOff() {
 	log.debug("LED changed to: off")
 	sendEvent(name: "ledStatus", value: "off");
-	hubGet("/cgi-bin/hi3510/param.cgi?cmd=setinfrared&-infraredstat=close&", false)
+	hubGet("/cgi-bin/hi3510/param.cgi?cmd=setinfrared&-infraredstat=close", false)
 }
 
 def ledAuto() {
 	log.debug("LED changed to: auto")
 	sendEvent(name: "ledStatus", value: "auto");
-	hubGet("/cgi-bin/hi3510/param.cgi?cmd=setinfrared&-infraredstat=auto&", false)
+	hubGet("/cgi-bin/hi3510/param.cgi?cmd=setinfrared&-infraredstat=auto", false)
 }
 
 def moveToPreset1() {
 	log.debug("preset1")
-   	hubGet("/cgi-bin/hi3510/preset.cgi?-act=goto&-number=0&", false);
+   	hubGet("/cgi-bin/hi3510/preset.cgi?-act=goto&-number=0", false);
 }
 
 def moveToPreset2() {
 	log.debug("preset2")
-    hubGet("/cgi-bin/hi3510/preset.cgi?-act=goto&-number=1&", false);
+	hubGet("/cgi-bin/hi3510/preset.cgi?-act=goto&-number=1", false);
 }
 
 def moveToPreset3() {
 	log.debug("preset3")
-    hubGet("/cgi-bin/hi3510/preset.cgi?-act=goto&-number=2&", false);
+	hubGet("/cgi-bin/hi3510/preset.cgi?-act=goto&-number=2", false);
 }
 
 def moveToPreset4() {
 	log.debug("preset4")
-    hubGet("/cgi-bin/hi3510/preset.cgi?-act=goto&-number=3&", false);
+	hubGet("/cgi-bin/hi3510/preset.cgi?-act=goto&-number=3", false);
 }
 
 //PTZ CONTROLS
 def moveLeft() {
 	if(mirror == "true") {
-		hubGet("/cgi-bin/hi3510/ptzctrl.cgi?-step=1&-act=right&", false);
+		hubGet("/cgi-bin/hi3510/ptzctrl.cgi?-step=1&-act=right", false);
 	} else {
-		hubGet("/cgi-bin/hi3510/ptzctrl.cgi?-step=1&-act=left&", false);
+		hubGet("/cgi-bin/hi3510/ptzctrl.cgi?-step=1&-act=left", false);
 	}
 }
 
 def moveRight() {
 	if(mirror == "true") {
-		hubGet("/cgi-bin/hi3510/ptzctrl.cgi?-step=1&-act=left&", false);
+		hubGet("/cgi-bin/hi3510/ptzctrl.cgi?-step=1&-act=left", false);
 	} else {
-		hubGet("/cgi-bin/hi3510/ptzctrl.cgi?-step=1&-act=right&", false);
+		hubGet("/cgi-bin/hi3510/ptzctrl.cgi?-step=1&-act=right", false);
 	}
 }
 
 def moveUp() {
 	if(flip == "true") {
-		hubGet("/cgi-bin/hi3510/ptzctrl.cgi?-step=1&-act=down&", false);
+		hubGet("/cgi-bin/hi3510/ptzctrl.cgi?-step=1&-act=down", false);
 	} else {
-		hubGet("/cgi-bin/hi3510/ptzctrl.cgi?-step=1&-act=up&", false);
+		hubGet("/cgi-bin/hi3510/ptzctrl.cgi?-step=1&-act=up", false);
 	}
 }
 
 def moveDown() {
 	if(flip == "true") {
-		hubGet("/cgi-bin/hi3510/ptzctrl.cgi?-step=1&-act=up&", false);
+		hubGet("/cgi-bin/hi3510/ptzctrl.cgi?-step=1&-act=up", false);
 	} else {
-		hubGet("/cgi-bin/hi3510/ptzctrl.cgi?-step=1&-act=down&", false);
+		hubGet("/cgi-bin/hi3510/ptzctrl.cgi?-step=1&-act=down", false);
 	}
 }
 
 def poll() {
 	log.trace("poll");
-	hubGet("/cgi-bin/hi3510/param.cgi?cmd=getinfrared&", false);
+	hubGet("/cgi-bin/hi3510/param.cgi?cmd=getinfrared", false);
 }
 
 private hubGet(def apiCommand, def useS3) {
@@ -254,14 +254,20 @@ private hubGet(def apiCommand, def useS3) {
 	def porthex = convertPortToHex(port)
 	device.deviceNetworkId = "$iphex:$porthex"
 	//log.debug "Device Network Id set to ${iphex}:${porthex}"
+
+	// Create headers
+	def headers = [:]
 	def hostAddress = "${ip}:${port}"
-	log.debug("Executing hubaction on " + hostAddress)
-	def uri = apiCommand + "usr=${username}&pwd=${password}"
-	log.debug uri
+	headers.put("HOST", hostAddress)
+	def authorizationClear = "${username}:${password}"
+    def authorizationEncoded = "Basic " + authorizationClear.encodeAsBase64().toString()
+	headers.put("Authorization", authorizationEncoded)
+
+	log.debug("Getting ${apiCommand}")
 	def hubAction = new physicalgraph.device.HubAction(
 		method: "GET",
-		path: uri,
-		headers: [HOST:hostAddress])
+		path: apiCommand,
+		headers: headers)
 	if(useS3) {
 		//log.debug "Outputting to S3"
 		hubAction.options = [outputMsgToS3:true]
