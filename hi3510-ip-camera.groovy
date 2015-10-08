@@ -260,7 +260,7 @@ private hubGet(def apiCommand, def useS3) {
 	def hostAddress = "${ip}:${port}"
 	headers.put("HOST", hostAddress)
 	def authorizationClear = "${username}:${password}"
-    def authorizationEncoded = "Basic " + authorizationClear.encodeAsBase64().toString()
+	def authorizationEncoded = "Basic " + authorizationClear.encodeAsBase64().toString()
 	headers.put("Authorization", authorizationEncoded)
 
 	log.debug("Getting ${apiCommand}")
