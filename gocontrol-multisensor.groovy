@@ -18,6 +18,7 @@ metadata {
 		capability "Motion Sensor"
 		capability "Temperature Measurement"
 		capability "Configuration"
+		capability "Battery"
 		capability "Sensor"
 
 		fingerprint deviceId: "0x2001", inClusters: "0x30,0x31,0x80,0x84,0x70,0x85,0x72,0x86"
@@ -33,6 +34,11 @@ metadata {
 		for (int i = 0; i <= 100; i += 20) {
 			status "temperature ${i}F": new physicalgraph.zwave.Zwave().sensorMultilevelV2.sensorMultilevelReport(
 				scaledSensorValue: i, precision: 1, sensorType: 1, scale: 1).incomingMessage()
+		}
+
+		for (int i = 0; i <= 100; i += 20) {
+			status "battery ${i}%": new physicalgraph.zwave.Zwave().batteryV1.batteryReport(
+				batteryLevel: i).incomingMessage()
 		}
 	}
     
@@ -61,12 +67,15 @@ metadata {
 				[value: 96, color: "#bc2323"]
 			]
 		}
+		valueTile("battery", "device.battery", inactiveLabel: false, decoration: "flat", width: 2, height: 2) {
+			state "battery", label:'${currentValue}% battery', unit:""
+		}
 		standardTile("configure", "device.configure", inactiveLabel: false, decoration: "flat", width: 2, height: 2) {
 			state "configure", label:'', action:"configuration.configure", icon:"st.secondary.configure"
 		}
 
 		main(["motion", "temperature"]);
-		details(["motion", "temperature", "configure"]);
+		details(["motion", "temperature", "battery", "configure"]);
 	}
 }
 
@@ -103,6 +112,15 @@ def zwaveEvent(physicalgraph.zwave.commands.sensormultilevelv2.SensorMultilevelR
 			map.name = "temperature"
 			break;
 	}
+	map
+}
+
+def zwaveEvent(physicalgraph.zwave.commands.batteryv1.BatteryReport cmd) {
+	def map = [:]
+	map.name = "battery"
+	map.value = cmd.batteryLevel > 0 ? cmd.batteryLevel.toString() : 1
+	map.unit = "%"
+	map.displayed = false
 	map
 }
 
